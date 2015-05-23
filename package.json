@@ -1,0 +1,15 @@
+{
+  "name": "webgl",
+  "version": "1.0.0",
+  "description": "Game Engine wrapping Three.js implementation of webgl rendering",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.8.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "gulp test"
+  },
+  "author": "Muneeb Baderoen",
+  "license": "ISC"
+}
