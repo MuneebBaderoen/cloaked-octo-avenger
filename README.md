@@ -15,3 +15,11 @@ Functionality we hope to provide:
 
 
 Just a fun side project and will build functionality as time allows. 
+
+<h1>Getting started</h1>
+
+run "npm install" from root folder
+
+run "gulp" to start a development server that will watch for changes on js files
+
+open your favourite browser and navigate to "localhost:3000" to see it running
