@@ -11,7 +11,14 @@
     "gulp": "^3.8.11"
   },
   "devDependencies": {
+    "browser-sync": "^2.7.4",
+    "browserify": "^10.2.1",
     "gulp-jasmine": "^2.0.1",
+    "gulp-livereload": "^3.8.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-util": "^3.0.4",
+    "lodash.assign": "^3.2.0",
+    "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.2.1"
   },
   "scripts": {

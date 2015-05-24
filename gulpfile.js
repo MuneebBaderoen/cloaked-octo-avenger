@@ -1,39 +1,51 @@
-'use strict';
-
-var watchify = require('watchify');
-var browserify = require('browserify');
+/* global require */
 var gulp = require('gulp');
+var browserify = require('browserify');
+var sync = require('browser-sync');
 var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var gutil = require('gulp-util');
-var sourcemaps = require('gulp-sourcemaps');
+//var uglify      = require('gulp-uglify');
+//var plumber     = require('gulp-plumber');
+//var streamify   = require('gulp-streamify');
+var watchify = require('watchify');
 var assign = require('lodash.assign');
 
-// add custom browserify options here
-var customOpts = {
-  entries: ['./src/index.js'],
-  debug: true
-};
-var opts = assign({}, watchify.args, customOpts);
-var b = watchify(browserify(opts)); 
+gulp.task('sync', ['scripts'], function() {
+    //serving from basdirectory, not running server from built files.
+    //will include script injection into index.html at some stage to allow this.
+    sync.init(null, {
+        open: false,
+        server: {
+            baseDir: "./"
+        }
+    });
+});
 
-// add transformations here
-// i.e. b.transform(coffeeify);
+gulp.task('scripts', function() {
+    //set options for browserify
+    var options = assign({}, watchify.args, {
+        //specifying main modules, dependencies will be loaded recursively
+        entries: ['./js/engine.js'], 
+        debug: true
+    });
 
-gulp.task('js', bundle); // so you can run `gulp js` to build the file
-b.on('update', bundle); // on any dep update, runs the bundler
-b.on('log', gutil.log); // output build logs to terminal
+    //initialize rebundling on change
+    var bundler = watchify(browserify(options));
+    //bundler.on('update', rebundle);
 
-function bundle() {
-  return b.bundle()
-    // log errors if they happen
-    .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-    .pipe(source('bundle.js'))
-    // optional, remove if you don't need to buffer file contents
-    .pipe(buffer())
-    // optional, remove if you dont want sourcemaps
-    .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-       // Add transformation tasks to the pipeline here.
-    .pipe(sourcemaps.write('./')) // writes .map file
-    .pipe(gulp.dest('./dist'));
-}
+    function rebundle() {
+        return bundler.bundle()
+            .pipe(source('bundle.js'))
+            //.pipe(streamify(uglify()))
+            .pipe(gulp.dest('./dist'))
+            .pipe(sync.reload({
+                stream: true,
+                once: true
+            }));
+    }
+
+    return rebundle();
+});
+
+gulp.task('default', ['sync'], function() {
+    gulp.watch("./js/**/*.js", ['scripts']);
+});
