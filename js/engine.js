@@ -1,15 +1,16 @@
 (function() {
-    window.Engine = function(init) {
+    window.Engine = function(init, update) {
         //attributes declared here, functions declared on Engine prototype
         this.renderer = undefined;
         this.currentScene = undefined;
         this.camera = undefined;
+        this.input = undefined;
 
-        this.initialize(init);
+        this.initialize(init, update);
     }
 
     _.extend(window.Engine.prototype, {
-        initialize: function(callback) {
+        initialize: function(initCallback, updateCallback) {
             this.renderer = this.getRenderer();
             this.currentScene = new THREE.Scene();
             this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -24,12 +25,19 @@
             this.currentScene.add(box);
             this.camera.position.z = 5;
 
+            if(initCallback)
+            	callback();
             //callback end
             this.render.call(this);
         },
+       
         update: function() {
             this.cube.rotation.x += 0.01;
             this.cube.rotation.y += 0.01;
+            setTimeout(function() {
+                this.camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 0.1, 1000);
+            },5000);
+
         },
         getRenderer: function() {
             //if renderer undefined, init it and return it, else return it

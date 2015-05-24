@@ -3,10 +3,17 @@
   "version": "1.0.0",
   "description": "Game Engine wrapping Three.js implementation of webgl rendering",
   "main": "gulpfile.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MuneebBaderoen/cloaked-octo-avenger"
+  },
   "dependencies": {
     "gulp": "^3.8.11"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp-jasmine": "^2.0.1",
+    "watchify": "^3.2.1"
+  },
   "scripts": {
     "test": "gulp test"
   },

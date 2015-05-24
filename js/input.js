@@ -10,7 +10,13 @@
     }
 
     _.extend(InputManager.prototype, {
+    	/*
+		
+
+
+    	*/
         addListener: function(eventName, callback) {
+        	this.trigger('OctoInputEvent', {});
             this.inputListener.on(eventName, callback);
         }
     });
