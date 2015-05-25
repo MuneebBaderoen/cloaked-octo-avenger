@@ -14,12 +14,14 @@
   },
   "browser": {
     "underscore": "./libs/underscore.js",
-    "hammerjs": "./libs/hammer.min.js"
+    "hammerjs": "./libs/hammer.js",
+    "matterjs": "./libs/matter-0.8.0.js"
   },
   "browserify-shim": {
     "underscore": "_",
     "hammerjs": "Hammer",
-    "three": "global:THREE"
+    "three": "global:THREE",
+    "matterjs": "Matter"
   },
   "dependencies": {
     "gulp": "^3.8.11"

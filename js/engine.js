@@ -1,5 +1,7 @@
+var matterRenderer = require('./renderers/matterjsRenderer.js');
 var THREE = require('three');
 var _ = require('underscore');
+var Matter = require('matterjs');
 
 var Engine = function(init, update) {
     //attributes declared here, functions declared on Engine prototype
@@ -16,30 +18,48 @@ _.extend(Engine.prototype, {
         this.renderer = this.getRenderer();
         this.currentScene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        //callback();
-        //callback start
-        var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var material = new THREE.LineBasicMaterial();
-        this.cube = cube = new THREE.Mesh(geometry, material);
-        var box = new THREE.BoxHelper(cube);
 
-        this.currentScene.add(cube);
-        this.currentScene.add(box);
+        //Matter js world initialization
+        this.physEngine = Matter.Engine.create({
+            render: {
+                controller: matterRenderer
+            }
+        });
+        var boxA = Matter.Bodies.rectangle(400, 200, 80, 80);
+        var boxB = Matter.Bodies.rectangle(450, 50, 80, 80);
+        var ground = Matter.Bodies.rectangle(400, 610, 810, 60, {
+            isStatic: true
+        });
+
+        Matter.World.add(this.physEngine.world, [boxA, boxB, ground]);
+
+        //Threejs initialization
+        var geometryA = new THREE.BoxGeometry(1, 1, 1);
+        var materialA = new THREE.LineBasicMaterial();
+        var boxA3 = new THREE.Mesh(geometryA, materialA);
+
+        var geometryB = new THREE.BoxGeometry(1, 1);
+        var materialB = new THREE.LineBasicMaterial();
+        var boxB3 = new THREE.Mesh(geometryB, materialB);
+
+        boxA3.position.set(400, 200);
+        boxB3.position.set(450, 50);
+
+        this.currentScene.add(boxA3);
+        this.currentScene.add(boxB3);
+
         this.camera.position.z = 5;
+        Matter.Engine.run(this.physEngine);
 
-        if(initCallback)
-            callback();
-        //callback end
+        // if(initCallback)
+        //     initCallback();
+
         this.render.call(this);
     },
 
     update: function() {
-        this.cube.rotation.x += 0.01;
-        this.cube.rotation.y += 0.01;
-        setTimeout(function() {
-            this.camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 0.1, 1000);
-        }, 5000);
-
+        // boxA3.position.set(400,200);
+        // boxB3.position.set(450,50);
     },
     getRenderer: function() {
         //if renderer undefined, init it and return it, else return it

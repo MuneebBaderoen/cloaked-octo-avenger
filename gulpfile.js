@@ -44,7 +44,7 @@ gulp.task('scripts', function() {
                 loadMaps: true
             }))
             // Add transformation tasks to the pipeline here.
-            .pipe(uglify())
+            //.pipe(uglify())
             .on('error', gutil.log)
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('./dist'))
@@ -60,7 +60,11 @@ gulp.task('scripts', function() {
 gulp.task('html', function() {
     return gulp.src('./index.html')
         .pipe(processhtml({}))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./dist'))
+        .pipe(sync.reload({
+            stream: true,
+            once: true
+        }));
 });
 
 gulp.task('default', ['html', 'sync'], function() {
@@ -70,4 +74,5 @@ gulp.task('default', ['html', 'sync'], function() {
 
     //watch our js folder for changes
     gulp.watch("./js/**/*.js", ['scripts']);
+    gulp.watch("./**/*.html", ['html']);
 });
