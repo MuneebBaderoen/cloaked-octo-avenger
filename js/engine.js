@@ -21,9 +21,13 @@ _.extend(Engine.prototype, {
                 controller: matterRenderer
             }
         });
-        var boxA = Matter.Bodies.rectangle(400, 200, 80, 80);
-        var boxB = Matter.Bodies.rectangle(450, 50, 80, 80);
-        var ground = Matter.Bodies.rectangle(400, 610, 810, 60, {
+
+        //Use matter js renderer
+        //we should be able to see the same interaction
+        // this.physEngine = Matter.Engine.create(document.body);
+        var boxA = Matter.Bodies.rectangle(200, 300, 80, 80);
+        var boxB = Matter.Bodies.rectangle(250, 50, 80, 80);
+        var ground = Matter.Bodies.rectangle(300, 450, 850, 50, {
             isStatic: true
         });
 
