@@ -2,13 +2,16 @@ var matterRenderer = require('./renderers/matterjsRenderer.js');
 var THREE = require('three');
 var _ = require('underscore');
 var Matter = require('matterjs');
+var InputManager = require('./input.js')
 
 var Engine = function(init, update) {
     //attributes declared here, functions declared on Engine prototype
     this.renderer = undefined;
     this.currentScene = undefined;
     this.camera = undefined;
-    this.input = undefined;
+    this.input = new InputManager({
+        engine: this
+    });
 
     this.initialize(init, update);
 }

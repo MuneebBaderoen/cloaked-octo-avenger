@@ -38,6 +38,10 @@ gulp.task('scripts', function() {
 
     function rebundle() {
         return bundler.bundle()
+            .on('error', function() {
+                gutil.log(arguments);
+                this.emit('end');
+            })
             .pipe(source('bundle.js'))
             .pipe(buffer())
             .pipe(sourcemaps.init({
@@ -45,7 +49,6 @@ gulp.task('scripts', function() {
             }))
             // Add transformation tasks to the pipeline here.
             //.pipe(uglify())
-            .on('error', gutil.log)
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('./dist'))
             .pipe(sync.reload({

@@ -45,7 +45,8 @@ var MatterjsRenderer = {
         this.camera.position.y = 200;
         this.camera.position.z = 300;
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-
+        this.camera.theta = 0;
+        this.camera.phi = 0;
     },
     create: function(options) {
         var defaults = {
@@ -81,9 +82,8 @@ var MatterjsRenderer = {
 
         var renderObject = _.extend(defaults, options);
 
-        renderObject.scene = new THREE.Scene();
-        renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
+        // renderObject.scene = new THREE.Scene();
+        // renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         // //render.canvas = render.renderObject || _createCanvas(render.options.width, render.options.height);
         // //render.context = render.canvas.getContext('2d');
         renderObject.textures = {};
@@ -114,7 +114,7 @@ var MatterjsRenderer = {
         return renderObject;
     },
     world: function(engine) {
-        console.time('ms');
+        //console.time('ms');
         //console.log('inside render loop', this.frameCount++);
         var objectMap = this.objectMap,
             scene = this.scene,
@@ -146,9 +146,10 @@ var MatterjsRenderer = {
 
         });
 
+        this.rotateCamera();
         this.renderer.render(this.scene, this.camera);
-        var time = console.timeEnd('ms');
-        console.log(time);
+        //var time = console.timeEnd('ms');
+        //console.log(time);
     },
     buildAxes: function(length) {
         var axes = new THREE.Object3D();
@@ -192,6 +193,17 @@ var MatterjsRenderer = {
     },
     clear: function(renderer) {
         console.log('clearing');
+    },
+    rotateCamera: function() {
+        var c = this.camera;
+        c.zoom = 500;
+        this.camera.position.x = c.zoom * Math.sin(c.theta);
+        this.camera.position.z = c.zoom * Math.cos(c.theta);
+        this.camera.position.y = c.zoom * Math.cos(c.phi);
+        this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        // this.camera.theta += 0.1;
+        // this.camera.phi += 0.1;
     }
 };
 
