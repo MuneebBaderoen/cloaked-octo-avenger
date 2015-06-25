@@ -8,26 +8,14 @@ var THREE = require('three'),
 
 var matterjsRenderer = {
     frameCount: 0,
-    renderer: undefined,
-    currentScene: undefined,
-    // rotation: {
-    //     x: 1,
-    //     y: 1
-    // },
-    // position: {
-    //     x: 0,
-    //     y: 0,
-    //     z: 0
-    // },
-    
     create: function(options) {
         var defaults = {
             controller: matterjsRenderer,
             element: null,
             canvas: null,
             options: {
-                width: 800,
-                height: 600,
+                //width: 300,
+                //height: 600,
                 pixelRatio: 1,
                 background: '#fafafa',
                 wireframeBackground: '#222',
@@ -80,7 +68,7 @@ var matterjsRenderer = {
         renderObject.scene.add(dirLight);
 
         //Initialize camera     
-        renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
         renderObject.camera.position.x = 100;
         renderObject.camera.position.y = 200;
         renderObject.camera.position.z = 300;
@@ -88,9 +76,9 @@ var matterjsRenderer = {
         renderObject.camera.theta = 0;
         renderObject.camera.phi = 0;
 
-        renderObject.objectMap = {
+        renderObject.objectMap = {};
 
-        };
+        renderObject.spriteMap = {};
 
         return renderObject;
     },
@@ -101,42 +89,70 @@ var matterjsRenderer = {
             renderer = renderObject.renderer,
             objectMap = renderObject.objectMap,
             scene = renderObject.scene,
-            camera = renderObject.camera;
+            camera = renderObject.camera,
+            bodies = Matter.Composite.allBodies(engine.world),
+            prepareBody = this.prepareBody;
 
 
-        _.each(engine.world.bodies, function(physObject) {
-            //this assumes that items remain once added. need to handle removing items from the world
-            if(!objectMap[physObject.id]) {
-                var geometryA = new THREE.BoxGeometry(80, 80, 80);
-                //var geometryA = new THREE.BoxGeometry(50, 50, 50);
-                var materialA = new THREE.MeshPhongMaterial({
-                    color: 0x00ff00
-                });
-                var box = new THREE.Mesh(geometryA, materialA);
-                //flip y axis and rotation, left-hand rule vs right-hand rule of physics engine vs gl renderer
-                //offsetting the physics area ( 800x600 ) to put its center at our world origin.
-                box.position.set(physObject.position.x - 400, -physObject.position.y + 300, 0);
-                box.rotation.z = -physObject.angle;
-                scene.add(box);
-                objectMap[physObject.id] = box;
+        //TODO: relocate to update function passed into engine
+        //TODO: write custom gameloop function
+        this.rotateCamera(renderObject);
 
-            } else {
-                //Object was already created in our threeJS scene
-                //transform our threejs object
-                var box = objectMap[physObject.id];
-                box.position.set(physObject.position.x - 400, -physObject.position.y + 300, 0);
-                box.rotation.z = -physObject.angle;
-            }
+        //frustum culling goes here (if perspective camera)
+        //rectangle bounds culling goes here (if orthographic cam)
 
+        //one day occlusion culling will go here
+
+        //render step
+        _.each(bodies, function(physObject) {
+            prepareBody(physObject, renderObject);
         });
 
-        this.rotateCamera(renderObject);
+
         renderObject.renderer.render(renderObject.scene, renderObject.camera);
         //var time = console.timeEnd('ms');
         //console.log(time);
     },
     clear: function(renderer) {
         console.log('clearing');
+    },
+    //Prepare functions
+    //Since the rendering isnt actually handled here, and is offloaded to the ThreeJS rendering of the scene, all we're doing
+    //is ensuring that the data from the physics engine is correctly mapped across to the representation we have in the ThreeJS
+    //scene
+    prepareBody: function(physObject, renderObject){
+        var objectMap = renderObject.objectMap,
+            scene = renderObject.scene,
+            box;
+
+        //if theres nothing to draw, skip
+        // if(!physObject.visible){
+        //     return;
+        // }
+ 
+        
+        //this assumes that items remain once added. need to handle removing items from the world
+        if(!objectMap[physObject.id]) {
+            var geometryA = new THREE.BoxGeometry(physObject.originalBounds.w, physObject.originalBounds.h, 80);
+            var materialA = new THREE.MeshPhongMaterial({
+                color: 0x00ff00
+            });
+            box = new THREE.Mesh(geometryA, materialA);
+            scene.add(box);
+            objectMap[physObject.id] = box;
+        } 
+
+        //Object was already created in our threeJS scene
+        //flip y axis and rotation, left-hand rule vs right-hand rule of physics engine vs gl renderer
+        if(!box){
+            box = objectMap[physObject.id];            
+        }
+        box.position.set(physObject.position.x, -physObject.position.y, 0);
+        box.rotation.z = -physObject.angle;
+        return box;
+    },
+    prepareComposite: function(physObject, objectMap){
+
     },
     rotateCamera: function(renderObject) {
         var c = renderObject.camera;

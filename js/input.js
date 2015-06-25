@@ -16,12 +16,12 @@ var InputManager = function(options) {
 
     this.inputListener.on('panup pandown', _.bind(function(ev) {
         console.log('panup fired', ev);
-        this.engine.physEngine.render.controller.camera.phi += ev.velocityY / 10;
+        this.engine.physEngine.render.camera.phi += ev.velocityY / 10;
     }, this));
 
     this.inputListener.on('panleft panright', _.bind(function(ev) {
         console.log('panup fired', ev);
-        this.engine.physEngine.render.controller.camera.theta += ev.velocityX / 10;
+        this.engine.physEngine.render.camera.theta += ev.velocityX / 10;
     }, this));
 }
 
