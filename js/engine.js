@@ -3,7 +3,7 @@ var matterjsRenderer = require('./renderers/matterjsRenderer.js'),
     _ = require('underscore'),
     Matter = require('matterjs'),
     inputManager = require('./input.js'),
-    Events = require('./events.js'),
+    Events = require('./events.js');
 
 var Engine = function(options, init, update) {
     //attributes declared here, functions declared on Engine prototype

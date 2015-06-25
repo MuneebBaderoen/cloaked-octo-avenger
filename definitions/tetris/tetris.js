@@ -18,6 +18,10 @@ var Tetris = new OctoEngine({
 				this.getLayer('HUD').showPauseMenu();
 			}
 		}
+	},
+	initialize: function(){
+		//declare all those states and their initial values here.
+		//add validation to the state object to ensure that it can only be one of the predefined values
 	}
 })
 
