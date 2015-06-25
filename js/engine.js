@@ -3,8 +3,7 @@ var matterjsRenderer = require('./renderers/matterjsRenderer.js'),
     _ = require('underscore'),
     Matter = require('matterjs'),
     inputManager = require('./input.js'),
-    eventsModule = require('./events.js'),
-    Events = new eventsModule();
+    Events = require('./events.js'),
 
 var Engine = function(options, init, update) {
     //attributes declared here, functions declared on Engine prototype
@@ -24,7 +23,7 @@ var Engine = function(options, init, update) {
     this.initialize(options);
 }
 
-_.extend(Engine.prototype, eventsModule.prototype, {
+_.extend(Engine.prototype, Events.prototype, {
     initialize: function(options) {
         this.listen();
 

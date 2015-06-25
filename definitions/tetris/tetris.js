@@ -7,13 +7,13 @@ var Tetris = new OctoEngine({
 	bounds: 'axis' //axis-aligned 
 	view: 'orthographic' // isometric || orthographic
 	events:{
-		'state:global': function(attribute, stateObject){
+		'state:global': function(source, attribute){
 			if(attribute.was('menu') && attribute.is('game')){
 				stateObject.set('game', 'loading');
 				this.getLayer('game').initialize();
 			}
 		},
-		'state:game': function(attribute, stateObject)	
+		'state:game': function(source, attribute)	
 			if(attribute.was('play') && attribute.is('pause')){
 				this.getLayer('HUD').showPauseMenu();
 			}

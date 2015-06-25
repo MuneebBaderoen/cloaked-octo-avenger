@@ -1,4 +1,5 @@
-var _ = require('underscore');
+var _ = require('underscore'),
+	Events = ('../events.js');
 
 var State = function(options){
 	// this.layer = options.layer;
@@ -7,11 +8,11 @@ var State = function(options){
 	return this;
 }
 
-_.extend(State.prototype, {
+_.extend(State.prototype, Events.prototype, {
 	set: function (key, value){
 		var previous = this.attributes[key];
 		this.attributes[key] = new Attribute(value, previous);
-		Events.trigger('state:key state', [this.attributes[key], this]);
+		this.trigger('state:' + key + ' state', this.attributes[key]);
 	},
 	get: function(key){
 		return this.attributes[key];

@@ -26,6 +26,10 @@ _.extend(Events.prototype, {
 		});	
 	},
 	trigger: function(events, data){
+		//if the trigger call is made from an object, and not from the 'static' Events class,
+		//then the source will be appended as the first element
+		data.unshift(this);
+
 		_.each(events.split(' '), function(eventName){
 			_.each(this.handlers[eventName], function(handler){
 				//event callback is to be fired with the original listening object as the context
