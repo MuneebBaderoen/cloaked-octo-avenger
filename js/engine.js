@@ -1,15 +1,15 @@
-var matterRenderer = require('./renderers/matterjsRenderer.js');
-var THREE = require('three');
-var _ = require('underscore');
-var Matter = require('matterjs');
-var InputManager = require('./input.js')
+var matterjsRenderer = require('./renderers/matterjsRenderer.js'),
+    THREE = require('three'),
+    _ = require('underscore'),
+    Matter = require('matterjs'),
+    inputManager = require('./input.js');
 
 var Engine = function(init, update) {
     //attributes declared here, functions declared on Engine prototype
-    this.renderer = undefined;
-    this.currentScene = undefined;
-    this.camera = undefined;
-    this.input = new InputManager({
+    // this.renderer = undefined;
+    // this.currentScene = undefined;
+    // this.camera = undefined;
+    this.input = new inputManager({
         engine: this
     });
 
@@ -21,7 +21,7 @@ _.extend(Engine.prototype, {
         //Matter js world initialization
         this.physEngine = Matter.Engine.create({
             render: {
-                controller: matterRenderer
+                controller: matterjsRenderer
             }
         });
 

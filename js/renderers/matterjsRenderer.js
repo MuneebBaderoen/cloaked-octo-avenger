@@ -1,56 +1,28 @@
-// var THREE = require('three');
-// var _ = require('underscore');
-// var Matter = require('matterjs');
+var THREE = require('three'),
+    _ = require('underscore'),
+    Matter = require('matterjs'),
+    renderUtils = require('../renderUtils.js'),
+    utils = new renderUtils();
 
 //Move all the threejs stuff here.
 
-var MatterjsRenderer = {
+var matterjsRenderer = {
     frameCount: 0,
     renderer: undefined,
     currentScene: undefined,
-    rotation: {
-        x: 1,
-        y: 1
-    },
-    position: {
-        x: 0,
-        y: 0,
-        z: 0
-    },
-    objectMap: {
-
-    },
-    initRenderer: function() {
-        //Initialize renderer
-        if(this.renderer == void 0) {
-            this.renderer = renderer = new THREE.WebGLRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-        }
-
-        //Initialize scene
-        this.scene = new THREE.Scene();
-
-        //Initialize axes
-        this.scene.add(this.buildAxes(100));
-
-        //Initialize lighting
-        var dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight.position.set(-30, 50, 40);
-        this.scene.add(dirLight);
-
-        //Initialize camera		
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.x = 100;
-        this.camera.position.y = 200;
-        this.camera.position.z = 300;
-        this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        this.camera.theta = 0;
-        this.camera.phi = 0;
-    },
+    // rotation: {
+    //     x: 1,
+    //     y: 1
+    // },
+    // position: {
+    //     x: 0,
+    //     y: 0,
+    //     z: 0
+    // },
+    
     create: function(options) {
         var defaults = {
-            controller: MatterjsRenderer,
+            controller: matterjsRenderer,
             element: null,
             canvas: null,
             options: {
@@ -80,45 +52,57 @@ var MatterjsRenderer = {
             }
         };
 
+        return this.initRenderer(defaults, options);
+    },
+    initRenderer: function(defaults, options) {
+        //Renderobject we will return to MatterJS, containing everything we will need to render including 
+        //ThreeJS scene, camera, etc. 
+        //------
+        //Want to be able to switch here based on options and return different renderobjects
         var renderObject = _.extend(defaults, options);
 
-        // renderObject.scene = new THREE.Scene();
-        // renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        // //render.canvas = render.renderObject || _createCanvas(render.options.width, render.options.height);
-        // //render.context = render.canvas.getContext('2d');
-        renderObject.textures = {};
+        //Initialize renderer
+        if(renderObject.renderer == void 0) {
+            renderObject.renderer = renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+        }
 
-        // render.bounds = render.bounds || { 
-        //     min: { 
-        //         x: 0,
-        //         y: 0
-        //     }, 
-        //     max: { 
-        //         x: render.options.width,
-        //         y: render.options.height
-        //     }
-        // };
+        //Initialize scene
+        renderObject.scene = new THREE.Scene();
 
-        // // if (render.options.pixelRatio !== 1) {
-        // //     Render.setPixelRatio(render, render.options.pixelRatio);
-        // // }
+        //Initialize axes
+        renderObject.scene.add(utils.buildAxes(100));
 
-        // if (_.isElement(render.element)) {
-        //     render.element.appendChild(render.canvas);
-        // } else {
-        //     Common.log('Render.create: options.element was undefined, render.canvas was created but not appended', 'warn');
-        // }
+        //Initialize lighting
+        var dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(-30, 50, 40);
+        renderObject.scene.add(dirLight);
 
-        this.initRenderer();
+        //Initialize camera     
+        renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderObject.camera.position.x = 100;
+        renderObject.camera.position.y = 200;
+        renderObject.camera.position.z = 300;
+        renderObject.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        renderObject.camera.theta = 0;
+        renderObject.camera.phi = 0;
+
+        renderObject.objectMap = {
+
+        };
 
         return renderObject;
     },
     world: function(engine) {
         //console.time('ms');
         //console.log('inside render loop', this.frameCount++);
-        var objectMap = this.objectMap,
-            scene = this.scene,
-            camera = this.camera;
+        var renderObject = engine.render,
+            renderer = renderObject.renderer,
+            objectMap = renderObject.objectMap,
+            scene = renderObject.scene,
+            camera = renderObject.camera;
+
 
         _.each(engine.world.bodies, function(physObject) {
             //this assumes that items remain once added. need to handle removing items from the world
@@ -146,65 +130,25 @@ var MatterjsRenderer = {
 
         });
 
-        this.rotateCamera();
-        this.renderer.render(this.scene, this.camera);
+        this.rotateCamera(renderObject);
+        renderObject.renderer.render(renderObject.scene, renderObject.camera);
         //var time = console.timeEnd('ms');
         //console.log(time);
-    },
-    buildAxes: function(length) {
-        var axes = new THREE.Object3D();
-
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), 0xFF0000, false)); // +X
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), 0xFF0000, true)); // -X
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), 0x00FF00, false)); // +Y
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), 0x00FF00, true)); // -Y
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), 0x0000FF, false)); // +Z
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), 0x0000FF, true)); // -Z
-
-        return axes;
-
-    },
-    buildAxis: function(src, dst, colorHex, dashed) {
-        var geom = new THREE.Geometry(),
-            mat;
-
-        if(dashed) {
-            mat = new THREE.LineDashedMaterial({
-                linewidth: 3,
-                color: colorHex,
-                dashSize: 3,
-                gapSize: 3
-            });
-        } else {
-            mat = new THREE.LineBasicMaterial({
-                linewidth: 3,
-                color: colorHex
-            });
-        }
-
-        geom.vertices.push(src.clone());
-        geom.vertices.push(dst.clone());
-        geom.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
-
-        var axis = new THREE.Line(geom, mat, THREE.LinePieces);
-
-        return axis;
-
     },
     clear: function(renderer) {
         console.log('clearing');
     },
-    rotateCamera: function() {
-        var c = this.camera;
+    rotateCamera: function(renderObject) {
+        var c = renderObject.camera;
         c.zoom = 500;
-        this.camera.position.x = c.zoom * Math.sin(c.theta);
-        this.camera.position.z = c.zoom * Math.cos(c.theta);
-        this.camera.position.y = c.zoom * Math.cos(c.phi);
-        this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        c.position.x = c.zoom * Math.sin(c.theta);
+        c.position.z = c.zoom * Math.cos(c.theta);
+        c.position.y = c.zoom * Math.cos(c.phi);
+        c.lookAt(new THREE.Vector3(0, 0, 0));
 
-        // this.camera.theta += 0.1;
-        // this.camera.phi += 0.1;
+        // c.theta += 0.1;
+        // c.phi += 0.1;
     }
 };
 
-module.exports = MatterjsRenderer;
+module.exports = matterjsRenderer;
