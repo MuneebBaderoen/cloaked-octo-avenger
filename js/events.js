@@ -47,4 +47,4 @@ _.extend(Events.prototype, {
 
 });
 
-module.exports = new Events();
+module.exports = Events;
