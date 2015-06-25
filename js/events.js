@@ -28,13 +28,23 @@ _.extend(Events.prototype, {
 	trigger: function(events, data){
 		_.each(events.split(' '), function(eventName){
 			_.each(this.handlers[eventName], function(handler){
+				//event callback is to be fired with the original listening object as the context
 				//data is an array of arguments to be received from the trigger call
 				//e.g. Events.trigger('state:key state', [arg1, arg2, arg3]);
 				handler.callback.apply(handler.object, data);
 			});
 		});
+	},
+	listen: function(eventsObject){
+		var on = this.on,
+			events = eventsObject || this.events;
+
+		_.each(_.keys(eventsObject), function(events){
+			var callback = eventsObject[events];
+			on(events, callback);
+		});
 	}
 
 });
 
-module.exports = Events;
+module.exports = new Events();

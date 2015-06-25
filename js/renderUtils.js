@@ -2,11 +2,11 @@ var _ = require('underscore'),
     THREE = require('three');
 
 
-var renderUtils = function(){
+var RenderUtils = function(){
 	return this;
 }
 
-_.extend(renderUtils.prototype, {
+_.extend(RenderUtils.prototype, {
 	buildAxes: function(length) {
         var axes = new THREE.Object3D();
 
@@ -49,4 +49,4 @@ _.extend(renderUtils.prototype, {
     }
 });
 
-module.exports = renderUtils;
+module.exports = RenderUtils;

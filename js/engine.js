@@ -2,22 +2,31 @@ var matterjsRenderer = require('./renderers/matterjsRenderer.js'),
     THREE = require('three'),
     _ = require('underscore'),
     Matter = require('matterjs'),
-    inputManager = require('./input.js');
+    inputManager = require('./input.js'),
+    Events = require('./events.js');
 
-var Engine = function(init, update) {
+var Engine = function(options, init, update) {
     //attributes declared here, functions declared on Engine prototype
     // this.renderer = undefined;
     // this.currentScene = undefined;
     // this.camera = undefined;
+    var defaults = {
+
+    },
+    options = options || {};
+
+
     this.input = new inputManager({
         engine: this
     });
 
-    this.initialize(init, update);
+    this.initialize(options);
 }
 
-_.extend(Engine.prototype, {
-    initialize: function(initCallback, updateCallback) {
+_.extend(Engine.prototype, Events.prototype, {
+    initialize: function(options) {
+        this.listen();
+
         //Matter js world initialization
         this.physEngine = Matter.Engine.create({
             render: {
@@ -43,7 +52,7 @@ _.extend(Engine.prototype, {
         });
         ground.originalBounds = {
             w:850,
-            h:50
+            h:50        
         };
 
         Matter.World.add(this.physEngine.world, [boxA, boxB, ground]);
@@ -51,10 +60,16 @@ _.extend(Engine.prototype, {
         // boxA3.position.set(400, 200);
         // boxB3.position.set(450, 50);
 
+        if(options.initialize){
+            options.initialize();
+        }
+
         Matter.Engine.run(this.physEngine);
 
-        // if(initCallback)
-        //     initCallback();
+        //need to implement the custom game loop to be able to fire this off at the right spot
+        //currently the only place to execute a user specified update callback is in the renderer
+        // if(options.update)
+        //     options.update();
     }
 });
 

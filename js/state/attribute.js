@@ -1,8 +1,9 @@
 var _ = require('underscore');
 
 
-var Attribute = function(value, options){
+var Attribute = function(value, previous){
 	this.value = value;
+	this.previous = previous;
 }
 
 _.extend(Attribute.prototype, {
