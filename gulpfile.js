@@ -28,7 +28,7 @@ gulp.task('scripts', function() {
     //set options for browserify
     var options = assign({}, watchify.args, {
         //specifying main modules, dependencies will be loaded recursively
-        entries: ['./js/engine.js'],
+        entries: ['./demo/demo.js'],
         debug: true
     });
 
@@ -78,4 +78,7 @@ gulp.task('default', ['html', 'sync'], function() {
     //watch our js folder for changes
     gulp.watch("./js/**/*.js", ['scripts']);
     gulp.watch("./**/*.html", ['html']);
+
+    gulp.watch("./demo/**/*.js", ['scripts']);
+
 });

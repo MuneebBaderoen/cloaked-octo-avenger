@@ -11,19 +11,19 @@ var InputManager = function(options) {
     this.scene = options.scene || {};
 
     this.inputListener.on('swipe', _.bind(function(ev) {
-        console.log('swipe fired', ev);
+        // console.log('swipe fired', ev);
     }, this));
 
     this.inputListener.on('panup pandown', _.bind(function(ev) {
-        console.log('panup fired', ev);
+        // console.log('panup fired', ev);
         this.engine.physEngine.render.camera.phi += ev.velocityY / 10;
     }, this));
 
     this.inputListener.on('panleft panright', _.bind(function(ev) {
-        console.log('panup fired', ev);
+        //console.log('panup fired', ev);
         this.engine.physEngine.render.camera.theta += ev.velocityX / 10;
     }, this));
-}
+};
 
 _.extend(InputManager.prototype, {
     addListener: function(eventName, callback) {

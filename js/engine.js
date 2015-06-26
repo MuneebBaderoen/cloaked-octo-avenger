@@ -4,6 +4,7 @@ var matterjsRenderer = require('./renderers/matterjsRenderer.js'),
     Matter = require('matterjs'),
     inputManager = require('./input.js'),
     Events = require('./events.js');
+    Layer = require('./layer.js')
 
 var Engine = function(options, init, update) {
     //attributes declared here, functions declared on Engine prototype
@@ -15,10 +16,15 @@ var Engine = function(options, init, update) {
     },
     options = options || {};
 
-
     this.input = new inputManager({
         engine: this
     });
+
+    this.events = {
+        'testEvent': function(source, data){
+            console.log(source, data);
+        }
+    }
 
     this.initialize(options);
 }
@@ -64,13 +70,33 @@ _.extend(Engine.prototype, Events.prototype, {
             options.initialize();
         }
 
-        Matter.Engine.run(this.physEngine);
-
         //need to implement the custom game loop to be able to fire this off at the right spot
         //currently the only place to execute a user specified update callback is in the renderer
         // if(options.update)
         //     options.update();
+    },
+    start: function() {
+        Matter.Engine.run(this.physEngine);
+        this.trigger('testEvent', ['testData']);
+    },
+    setBackground: function() {
+        return true;
+    },
+    addLayer: function(){
+        //layerManager = getLayerManager();
+        return true;
+    },
+    addHUD: function() {
+        return true;
+    },
+    getLayer: function() {
+        
+    },
+    orderLayers: function() {
+
     }
 });
 
-new Engine();
+Engine.Layer = Layer;
+
+module.exports = Engine;

@@ -1,11 +1,11 @@
-var OctoEngine = require('../js/engine.js');
+var OctoEngine = require('../../js/engine.js');
 
 
 var Tetris = new OctoEngine({
 	type: '2D',
-	collision: 'bounds' //pixel || bounds
-	bounds: 'axis' //axis-aligned 
-	view: 'orthographic' // isometric || orthographic
+	collision: 'bounds', //pixel || bounds
+	bounds: 'axis', //axis-aligned 
+	view: 'orthographic', // isometric || orthographic
 	events:{
 		'state:global': function(source, attribute){
 			if(attribute.was('menu') && attribute.is('game')){
@@ -13,7 +13,7 @@ var Tetris = new OctoEngine({
 				this.getLayer('game').initialize();
 			}
 		},
-		'state:game': function(source, attribute)	
+		'state:game': function(source, attribute){
 			if(attribute.was('play') && attribute.is('pause')){
 				this.getLayer('HUD').showPauseMenu();
 			}
@@ -34,7 +34,7 @@ Tetris.setBackground(new OctoEngine.Layer({
 	},
 	update: function(){
 		
-	}
+	},
 	//preprocess
 	render: function(){
 
@@ -59,9 +59,6 @@ Tetris.addHUD(new OctoEngine.Layer({
 
 		}
 	},
-	onUpdate: function(){
-
-	}
 	//preprocess
 	render: function(){
 
@@ -70,7 +67,7 @@ Tetris.addHUD(new OctoEngine.Layer({
 
 Tetris.addLayer('game', new OctoEngine.Layer({
 	index: 0,
-	bounds: 
+	bounds: {},
 	sprite: 'images/background.png',
 	events:{
 		'state:game': function(attribute, stateObject){
@@ -78,7 +75,7 @@ Tetris.addLayer('game', new OctoEngine.Layer({
 				this.update = loadingUpdate;
 			}
 		}
-	}
+	},
 	initialize: function(){
 		//should be able to specify shaders here, specify where in the pipeline they occur.
 		//give the developer control over certain aspects of the pipeline
@@ -97,4 +94,4 @@ Tetris.addLayer('game', new OctoEngine.Layer({
 //layers are composited in that order. left most layer in array is top
 Tetris.orderLayers(['blocks']) 
 
-Tetris.start();
+module.exports = Tetris;
