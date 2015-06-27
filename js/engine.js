@@ -1,10 +1,11 @@
-var matterjsRenderer = require('./renderers/matterjsRenderer.js'),
+var matterjsRenderer = require('./render/matterjsRenderer.js'),
     THREE = require('three'),
     _ = require('underscore'),
     Matter = require('matterjs'),
     InputManager = require('./input.js'),
-    Events = require('./events.js');
-    Layer = require('./layer.js')
+    Events = require('./events.js'),
+    Layers = require('./layer/layers.js');
+    Layer = require('./layer/layer.js');
 
 var Engine = function(options, init, update) {
     //attributes declared here, functions declared on Engine prototype
@@ -35,7 +36,7 @@ var Engine = function(options, init, update) {
     this.initialize();
 }
 
-_.extend(Engine.prototype, Events.prototype, {
+_.extend(Engine.prototype, Events.prototype, Layers.prototype, {
     initialize: function() {
         this.listen();
 
@@ -85,17 +86,6 @@ _.extend(Engine.prototype, Events.prototype, {
     },
     getCamera: function(){
         return this.physics.render.camera;
-    },
-    addLayer: function(layer){
-        //layerManager = getLayerManager();
-        return true;
-    },
-    getLayer: function(layerKey) {
-        return layers[layerKey];
-        
-    },
-    orderLayers: function() {
-
     }
 });
 

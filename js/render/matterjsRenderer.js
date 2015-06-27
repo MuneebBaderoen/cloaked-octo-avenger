@@ -1,7 +1,7 @@
 var THREE = require('three'),
     _ = require('underscore'),
     Matter = require('matterjs'),
-    renderUtils = require('../renderUtils.js'),
+    renderUtils = require('./renderUtils.js'),
     utils = new renderUtils();
 
 //Move all the threejs stuff here.
@@ -51,7 +51,9 @@ var matterjsRenderer = {
 
         //Initialize renderer
         if(renderObject.renderer == void 0) {
-            renderObject.renderer = renderer = new THREE.WebGLRenderer();
+            renderObject.renderer = renderer = new THREE.WebGLRenderer({
+                antialias:true
+            });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
         }
@@ -67,11 +69,24 @@ var matterjsRenderer = {
         dirLight.position.set(-30, 50, 40);
         renderObject.scene.add(dirLight);
 
+        //Sprite test
+        var shrewTex = new THREE.ImageUtils.loadTexture('shrew.png');
+        var shrewMaterial = new THREE.SpriteMaterial({
+            map: shrewTex,
+            useScreenCoordinates: true
+        });
+        var shrewSprite = new THREE.Sprite(shrewMaterial);
+        shrewSprite.position.set(50,50, 0);
+        shrewSprite.scale.set(100,100,1);
+
+        renderObject.scene.add(shrewSprite);
+
         //Initialize camera     
         renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-        renderObject.camera.position.x = 100;
-        renderObject.camera.position.y = 200;
-        renderObject.camera.position.z = 300;
+        // renderObject.camera = new THREE.OrthographicCamera(400, -400, 300, -300, 0.1, 10000);
+        renderObject.camera.position.x = 0;
+        renderObject.camera.position.y = 0;
+        renderObject.camera.position.z = 4;
         renderObject.camera.lookAt(new THREE.Vector3(0, 0, 0));
         renderObject.camera.theta = 0;
         renderObject.camera.phi = 0;
@@ -96,7 +111,7 @@ var matterjsRenderer = {
 
         //TODO: relocate to update function passed into engine
         //TODO: write custom gameloop function
-        this.rotateCamera(renderObject);
+        // this.rotateCamera(renderObject);
 
         //frustum culling goes here (if perspective camera)
         //rectangle bounds culling goes here (if orthographic cam)
