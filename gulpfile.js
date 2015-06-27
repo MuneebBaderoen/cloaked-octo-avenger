@@ -75,6 +75,9 @@ gulp.task('default', ['html', 'sync'], function() {
     gulp.src('./libs/three.min.js')
         .pipe(gulp.dest('./dist/libs'));
 
+    gulp.src('./demo/images/**')
+        .pipe(gulp.dest('./dist/images'))
+
     //watch our js folder for changes
     gulp.watch("./js/**/*.js", ['scripts']);
     gulp.watch("./**/*.html", ['html']);

@@ -70,7 +70,7 @@ var matterjsRenderer = {
         renderObject.scene.add(dirLight);
 
         //Sprite test
-        var shrewTex = new THREE.ImageUtils.loadTexture('shrew.png');
+        var shrewTex = new THREE.ImageUtils.loadTexture('images/shrew.png');
         var shrewMaterial = new THREE.SpriteMaterial({
             map: shrewTex,
             useScreenCoordinates: true
@@ -147,7 +147,7 @@ var matterjsRenderer = {
         if(!objectMap[physObject.id]) {
             var geometryA = new THREE.BoxGeometry(physObject.originalBounds.w, physObject.originalBounds.h, 80);
             var materialA = new THREE.MeshPhongMaterial({
-                color: 0x00ff00
+                color: 0x00fff0
             });
             box = new THREE.Mesh(geometryA, materialA);
             scene.add(box);
