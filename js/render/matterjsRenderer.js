@@ -84,9 +84,6 @@ var matterjsRenderer = {
         //Initialize camera     
         renderObject.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
         // renderObject.camera = new THREE.OrthographicCamera(400, -400, 300, -300, 0.1, 10000);
-        renderObject.camera.position.x = 0;
-        renderObject.camera.position.y = 0;
-        renderObject.camera.position.z = 4;
         renderObject.camera.lookAt(new THREE.Vector3(0, 0, 0));
         renderObject.camera.theta = 0;
         renderObject.camera.phi = 0;
@@ -111,7 +108,7 @@ var matterjsRenderer = {
 
         //TODO: relocate to update function passed into engine
         //TODO: write custom gameloop function
-        // this.rotateCamera(renderObject);
+        this.rotateCamera(renderObject);
 
         //frustum culling goes here (if perspective camera)
         //rectangle bounds culling goes here (if orthographic cam)

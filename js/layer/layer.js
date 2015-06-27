@@ -2,11 +2,8 @@ var _ = require('underscore'),
 	Events = require('../events.js'),
 	Layers = require('./layers.js');
 
-var Layer = function(label, options){
-	if(typeof label !== 'string'){
-		console.warn('label must be a string');
-	}
-
+var Layer = function(options){
+	
 	var defaults = {
 		bounds: undefined,
 		position: undefined,
@@ -19,8 +16,12 @@ var Layer = function(label, options){
 	this._initialize();
 };
 
-_.extend(Layer.prototype, Layers.prototype, {
+_.extend(Layer.prototype, Events.prototype, {
+	label: undefined,
 	_initialize: function() {
+		this.label = this.options.label;
+		this.listen();
+
 		if(this.options.initialize){
 			this.options.initialize();
 		}

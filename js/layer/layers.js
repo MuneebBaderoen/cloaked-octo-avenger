@@ -6,10 +6,10 @@ var Layers = function(){};
 _.extend(Layers.prototype, {
 	layers: [],
 	addLayer: function(layer){
-		//body
+		this.layers.push(layer);
 	},
 	getLayer: function(layerLabel){
-		//body
+		return _.where(this.layers, {label: layerLabel});
 	},
 	removeLayer: function(layerLabel){
 		//body	
@@ -28,6 +28,11 @@ _.extend(Layers.prototype, {
 			}
 		});
 	},
+	updateLayers: function(){
+		_.each(this.layers, function(layer){
+			_.result(layer._update());
+		})
+	}
 });
 
 module.exports = Layers;

@@ -3,8 +3,9 @@ var matterjsRenderer = require('./render/matterjsRenderer.js'),
     _ = require('underscore'),
     Matter = require('matterjs'),
     InputManager = require('./input.js'),
+    State = require('./state/state.js'),
     Events = require('./events.js'),
-    Layers = require('./layer/layers.js');
+    Layers = require('./layer/layers.js'),
     Layer = require('./layer/layer.js');
 
 var Engine = function(options, init, update) {
@@ -25,6 +26,7 @@ var Engine = function(options, init, update) {
             }
         },
         renderer: matterjsRenderer,
+        state: new State(),
         //callbacks
         onInit : undefined, //function(){},
         onStart : undefined, //function(){},,
@@ -86,7 +88,17 @@ _.extend(Engine.prototype, Events.prototype, Layers.prototype, {
     },
     getCamera: function(){
         return this.physics.render.camera;
+    },
+    setState: function(key, value){
+
+    },
+    getState: function(key) {
+        if(key)
+            return this.options.state.get(key);
+        else
+            return this.state;
     }
+
 });
 
 Engine.Layer = Layer;

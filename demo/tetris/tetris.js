@@ -32,11 +32,14 @@ var Tetris = new OctoEngine({
 })
 
 Tetris.addLayer(new OctoEngine.Layer({
+	label: 'bg',
 	sprite: 'images/background.png',
 	initialize: function(){
 		//should be able to specify shaders here, specify where in the pipeline they occur.
 		//give the developer control over certain aspects of the pipeline
 		//give the ability to add steps into the pipeline
+		console.log('Initializing bg');
+
 	},
 	update: function(){
 		
@@ -48,12 +51,14 @@ Tetris.addLayer(new OctoEngine.Layer({
 }));
 
 Tetris.addLayer(new OctoEngine.Layer({
+	label:'hud',
 	sprite: 'images/background.png',
 	initialize: function(){
 		//should be able to specify shaders here, specify where in the pipeline they occur.
 		//give the developer control over certain aspects of the pipeline
 		//give the ability to add steps into the pipeline
 		//load textures here
+		console.log('Initializing HUD');
 	},
 	events:{
 		statechanged: function(attribute, currentState, previousState){
@@ -71,7 +76,8 @@ Tetris.addLayer(new OctoEngine.Layer({
 	}
 }));
 
-Tetris.addLayer('game', new OctoEngine.Layer({
+Tetris.addLayer( new OctoEngine.Layer({
+	label: 'game',
 	index: 0,
 	bounds: {},
 	sprite: 'images/background.png',
@@ -86,6 +92,8 @@ Tetris.addLayer('game', new OctoEngine.Layer({
 		//should be able to specify shaders here, specify where in the pipeline they occur.
 		//give the developer control over certain aspects of the pipeline
 		//give the ability to add steps into the pipeline
+		console.log('Initializing game layer');
+
 	},
 	loadingUpdate: function(){
 		
