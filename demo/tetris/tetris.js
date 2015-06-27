@@ -17,6 +17,12 @@ var Tetris = new OctoEngine({
 			if(attribute.was('play') && attribute.is('pause')){
 				this.getLayer('HUD').showPauseMenu();
 			}
+		},
+		'touch:panup touch:pandown': function(source, touchEvent){
+			this.getCamera().phi += touchEvent.velocityY / 10;
+		},
+		'touch:panleft touch:panright': function(source, touchEvent){
+			this.getCamera().theta += touchEvent.velocityX / 10;
 		}
 	},
 	initialize: function(){
@@ -25,7 +31,7 @@ var Tetris = new OctoEngine({
 	}
 })
 
-Tetris.setBackground(new OctoEngine.Layer({
+Tetris.addLayer(new OctoEngine.Layer({
 	sprite: 'images/background.png',
 	initialize: function(){
 		//should be able to specify shaders here, specify where in the pipeline they occur.
@@ -41,7 +47,7 @@ Tetris.setBackground(new OctoEngine.Layer({
 	}
 }));
 
-Tetris.addHUD(new OctoEngine.Layer({
+Tetris.addLayer(new OctoEngine.Layer({
 	sprite: 'images/background.png',
 	initialize: function(){
 		//should be able to specify shaders here, specify where in the pipeline they occur.

@@ -2,7 +2,7 @@ var matterjsRenderer = require('./renderers/matterjsRenderer.js'),
     THREE = require('three'),
     _ = require('underscore'),
     Matter = require('matterjs'),
-    inputManager = require('./input.js'),
+    InputManager = require('./input.js'),
     Events = require('./events.js');
     Layer = require('./layer.js')
 
@@ -12,37 +12,44 @@ var Engine = function(options, init, update) {
     // this.currentScene = undefined;
     // this.camera = undefined;
     var defaults = {
+        //components
+        input: (function(){
+            return new InputManager({
+                engine:this
+            })
+        }).apply(this),
+        events:{
+            'testEvent': function(source, data){
+                console.log(source, data);
+            }
+        },
+        renderer: matterjsRenderer,
+        //callbacks
+        onInit : undefined, //function(){},
+        onStart : undefined, //function(){},,
+        update: undefined //needs a custom game loop to find a home
+    };
+    
+    this.options = _.extend(defaults, options || {});
 
-    },
-    options = options || {};
-
-    this.input = new inputManager({
-        engine: this
-    });
-
-    this.events = {
-        'testEvent': function(source, data){
-            console.log(source, data);
-        }
-    }
-
-    this.initialize(options);
+    this.initialize();
 }
 
 _.extend(Engine.prototype, Events.prototype, {
-    initialize: function(options) {
+    initialize: function() {
         this.listen();
 
+
         //Matter js world initialization
-        this.physEngine = Matter.Engine.create({
+        this.physics = Matter.Engine.create({
             render: {
-                controller: matterjsRenderer
+                controller: this.options.renderer
             }
         });
 
         //Use matter js renderer
         //we should be able to see the same interaction
-        // this.physEngine = Matter.Engine.create(document.body);
+        // this.physics = Matter.Engine.create(document.body);
         var boxA = Matter.Bodies.rectangle(200, 300, 80, 80);
         boxA.originalBounds = {
             w:80,
@@ -61,35 +68,30 @@ _.extend(Engine.prototype, Events.prototype, {
             h:50        
         };
 
-        Matter.World.add(this.physEngine.world, [boxA, boxB, ground]);
+        Matter.World.add(this.physics.world, [boxA, boxB, ground]);
 
-        // boxA3.position.set(400, 200);
-        // boxB3.position.set(450, 50);
-
-        if(options.initialize){
-            options.initialize();
+        if(this.options.onInit){
+            this.options.onInit();
         }
 
         //need to implement the custom game loop to be able to fire this off at the right spot
         //currently the only place to execute a user specified update callback is in the renderer
-        // if(options.update)
-        //     options.update();
+        // if(this.options.update)
+        //     this.options.update();
     },
-    start: function() {
-        Matter.Engine.run(this.physEngine);
-        this.trigger('testEvent', ['testData']);
+    start: function(onStart) {
+        Matter.Engine.run(this.physics);
+        //this.trigger('testEvent', ['testData']);
     },
-    setBackground: function() {
-        return true;
+    getCamera: function(){
+        return this.physics.render.camera;
     },
-    addLayer: function(){
+    addLayer: function(layer){
         //layerManager = getLayerManager();
         return true;
     },
-    addHUD: function() {
-        return true;
-    },
-    getLayer: function() {
+    getLayer: function(layerKey) {
+        return layers[layerKey];
         
     },
     orderLayers: function() {

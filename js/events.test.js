@@ -14,6 +14,10 @@ describe('testing events receiver', function(){
 
 	});
 
+	it('should not have any callbacks registered on initialization', function(){
+		expect(Events.handlers).toBe({});
+	});
+
 	it('should subscribe to an event when calling Global "on"', function(){
 		var testReceiver = new TestClass();
 		Events.on(testReceiver, 'testEvent', function callback(source, eventName){
@@ -37,9 +41,11 @@ describe('testing events receiver', function(){
 
 	it('should subscribe to multiple events when space separated', function(){
 		var testReceiver = new TestClass();
+		var length = _.keys(Events.handlers).length;
 		Events.on(testReceiver, 'testEventOne testEventTwo', function callback(source, eventName){
 			console.log(eventName+" received");
 		});
+		expect(length+2).toBe(_.keys(Events.handlers).length);
 	});
 
 	it('should register events object when calling this.listen()', function(){

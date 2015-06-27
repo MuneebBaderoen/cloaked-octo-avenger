@@ -1,4 +1,5 @@
-var _ = require('underscore');
+var _ = require('underscore'),
+	Hammer = require('hammerjs');
 
 var Events = function(){};
 
@@ -11,6 +12,7 @@ window.Octo = window.Octo || {};
 window.Octo.handlers = window.Octo.handlers || {};
 
 _.extend(Events.prototype, {
+	inputListener: new Hammer(document.getElementsByTagName('body')[0]),
 	//handlers: {},
 	//function to be called by all game engine classes that wish to register event handlers
 	//event handlers are declared in the attributes of the object returned by the constructor
@@ -25,7 +27,7 @@ _.extend(Events.prototype, {
 	}
 	*/
 	on: function(listeningObject, events, handler){
-		// var self = this;
+		var self = this;
 
 		if(arguments.length<3){
 			console.error('missing parameters. Function requires (listeningObject, eventNames, handler)');
@@ -35,6 +37,14 @@ _.extend(Events.prototype, {
 			//create the key if it doesnt exist
 			if(!Octo.handlers[eventName]){
 				Octo.handlers[eventName] = [];
+			}
+
+			//if touch listener
+			//will evaluate to false if there are no matches (returns null)
+			if(eventName.match('touch')){
+				listeningObject.inputListener.on(eventName.split(':')[1], function(touchEvent){
+					listeningObject.trigger(eventName, [touchEvent]);
+				})
 			}
 
 			//append the new callback
@@ -73,7 +83,7 @@ _.extend(Events.prototype, {
 	listen: function(eventsObject){
 		var self = this, 
 			on = self.on,
-			eventsObject = eventsObject || self.events;
+			eventsObject = eventsObject || self.events || self.options.events;
 
 		_.each(_.keys(eventsObject), function(events){
 			var callback = eventsObject[events];
