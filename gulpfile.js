@@ -18,14 +18,14 @@ var karma = require('karma-as-promised');
 
 gulp.task('test', function () {
     return karma.server.start({
-            configFile: __dirname + '/karma.conf.js'
-                // singleRun: true
+            configFile: __dirname + '/karma.conf.js',
+            singleRun: true
         })
         .then(function () {
-            console.log('successful run! WOOOOOOOOOOO')
+            console.log('mission success!');
         })
         .catch(function () {
-            console.log('errororororororors fo dayyyyzzzzz');
+            console.log('some tests failed');
         });
 });
 
