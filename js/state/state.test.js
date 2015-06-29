@@ -5,7 +5,7 @@ describe('Test suite for State.js', function () {
 
     });
 
-    it('should description', function (arguments) {
+    it('should description', function () {
         //body
     });
 

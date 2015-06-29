@@ -1,58 +1,61 @@
 {
-  "name": "webgl",
-  "version": "1.0.0",
-  "description": "Game Engine wrapping Three.js implementation of webgl rendering",
-  "main": "gulpfile.js",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/MuneebBaderoen/cloaked-octo-avenger"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browser": {
-    "underscore": "./libs/underscore.js",
-    "hammerjs": "./libs/hammer.js",
-    "matterjs": "./libs/matter-0.8.0.js"
-  },
-  "browserify-shim": {
-    "underscore": "_",
-    "hammerjs": "Hammer",
-    "three": "global:THREE",
-    "matterjs": "Matter"
-  },
-  "dependencies": {
-    "gulp": "^3.8.11"
-  },
-  "devDependencies": {
-    "browser-sync": "^2.7.4",
-    "browserify": "^10.2.1",
-    "browserify-shim": "^3.8.6",
-    "gulp-jasmine": "^2.0.1",
-    "gulp-livereload": "^3.8.0",
-    "gulp-processhtml": "^1.1.0",
-    "gulp-sourcemaps": "^1.5.2",
-    "gulp-uglify": "^1.2.0",
-    "gulp-util": "^3.0.4",
-    "jasmine-core": "^2.3.4",
-    "karma": "^0.12.37",
-    "karma-as-promised": "^1.0.0",
-    "karma-browserify": "^4.2.1",
-    "karma-failed-reporter": "0.0.3",
-    "karma-jasmine": "^0.3.5",
-    "karma-phantomjs-launcher": "^0.2.0",
-    "karma-spec-reporter": "0.0.19",
-    "lodash.assign": "^3.2.0",
-    "phantomjs": "^1.9.17",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.2.1"
-  },
-  "scripts": {
-    "test": "gulp test"
-  },
-  "author": "Muneeb Baderoen",
-  "license": "ISC"
+    "name": "webgl",
+    "version": "1.0.0",
+    "description": "Game Engine wrapping Three.js implementation of webgl rendering",
+    "main": "gulpfile.js",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/MuneebBaderoen/cloaked-octo-avenger"
+    },
+    "browserify": {
+        "transform": [
+            "browserify-shim"
+        ]
+    },
+    "browser": {
+        "underscore": "./libs/underscore.js",
+        "hammerjs": "./libs/hammer.js",
+        "matterjs": "./libs/matter-0.8.0.js"
+    },
+    "browserify-shim": {
+        "underscore": "_",
+        "hammerjs": "Hammer",
+        "three": "global:THREE",
+        "matterjs": "Matter"
+    },
+    "dependencies": {
+        "gulp": "^3.8.11"
+    },
+    "devDependencies": {
+        "brfs": "^1.4.0",
+        "browser-sync": "^2.7.4",
+        "browserify": "^10.2.1",
+        "browserify-istanbul": "^0.2.1",
+        "browserify-shim": "^3.8.6",
+        "gulp-jasmine": "^2.0.1",
+        "gulp-livereload": "^3.8.0",
+        "gulp-processhtml": "^1.1.0",
+        "gulp-sourcemaps": "^1.5.2",
+        "gulp-uglify": "^1.2.0",
+        "gulp-util": "^3.0.4",
+        "jasmine-core": "^2.3.4",
+        "karma": "^0.12.37",
+        "karma-as-promised": "^1.0.0",
+        "karma-browserify": "^4.2.1",
+        "karma-coverage": "0.2.6",
+        "karma-failed-reporter": "0.0.3",
+        "karma-jasmine": "^0.3.5",
+        "karma-phantomjs-launcher": "^0.2.0",
+        "karma-spec-reporter": "0.0.19",
+        "lodash.assign": "^3.2.0",
+        "phantomjs": "^1.9.17",
+        "vinyl-buffer": "^1.0.0",
+        "vinyl-source-stream": "^1.1.0",
+        "watchify": "^3.2.1"
+    },
+    "scripts": {
+        "test": "gulp test"
+    },
+    "author": "Muneeb Baderoen",
+    "license": "ISC"
 }

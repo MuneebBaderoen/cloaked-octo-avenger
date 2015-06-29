@@ -84,17 +84,17 @@ describe('Test suite for Events.js', function () {
         }]);
     });
 
-    it('should clear all handlers if not passed any params', function (arguments) {
+    it('should clear all handlers if not passed any params', function () {
         expect(1)
             .toBe(2);
     });
 
-    it('should remove all handlers for an event when passed an event name', function (arguments) {
+    it('should remove all handlers for an event when passed an event name', function () {
         expect(1)
             .toBe(2);
     });
 
-    it('should remove all handlers for a specific object when passed an object', function (arguments) {
+    it('should remove all handlers for a specific object when passed an object', function () {
         expect(1)
             .toBe(2);
     });

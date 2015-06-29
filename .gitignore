@@ -2,3 +2,5 @@
 dist/**/*
 npm-debug.log
 *.sublime-workspace
+
+coverage/**/*

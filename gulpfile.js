@@ -86,7 +86,7 @@ gulp.task('html', function () {
         }));
 });
 
-gulp.task('default', ['html', 'sync'], function () {
+gulp.task('default', ['html', 'sync', 'test'], function () {
     //manually copy three.js lib since its not being bundled
     gulp.src('./libs/three.min.js')
         .pipe(gulp.dest('./dist/libs'));

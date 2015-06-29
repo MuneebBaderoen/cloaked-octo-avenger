@@ -3,7 +3,7 @@ describe('Test suite for Attribute.js', function () {
 
     });
 
-    it('should description', function (arguments) {
+    it('should description', function () {
         //body
     });
 

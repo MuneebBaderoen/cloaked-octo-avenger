@@ -1,18 +1,19 @@
 module.exports = function (config) {
     config.set({
         files: [
-            'js/**/*.test.js'
+            // 'js/**/*.test.js',
+            'js/**/*.js'
         ],
         frameworks: ['browserify', 'jasmine'],
         preprocessors: {
-            'js/**/*.test.js': [ /*'coverage',*/ 'browserify']
+            'js/**/*.js': ['browserify']
         },
-        plugins: ['karma-browserify', 'karma-jasmine', 'karma-phantomjs-launcher', 'karma-spec-reporter', 'karma-failed-reporter'],
+        plugins: ['karma-browserify', 'karma-jasmine', 'karma-coverage', 'karma-phantomjs-launcher', 'karma-spec-reporter', 'karma-failed-reporter'],
         browsers: ['PhantomJS'],
-        reporters: [ /*'coverage',*/ 'spec', 'failed'],
+        reporters: ['coverage', 'spec', 'failed'],
         browserify: {
-            debug: true // output source maps
-                //transform: ['browserify-istanbul']
+            debug: true, // output source maps
+            transform: ['browserify-istanbul']
         }
     })
 };
