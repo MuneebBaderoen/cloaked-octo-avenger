@@ -12,8 +12,24 @@ var gutil = require('gulp-util');
 var processhtml = require('gulp-processhtml');
 var watchify = require('watchify');
 var assign = require('lodash.assign');
+var jasmine = require('gulp-jasmine');
+var karma = require('karma-as-promised');
 
-gulp.task('sync', ['scripts'], function() {
+
+gulp.task('test', function () {
+    return karma.server.start({
+            configFile: __dirname + '/karma.conf.js'
+                // singleRun: true
+        })
+        .then(function () {
+            console.log('successful run! WOOOOOOOOOOO')
+        })
+        .catch(function () {
+            console.log('errororororororors fo dayyyyzzzzz');
+        });
+});
+
+gulp.task('sync', ['scripts'], function () {
     //serving from basdirectory, not running server from built files.
     //will include script injection into index.html at some stage to allow this.
     sync.init(null, {
@@ -24,7 +40,7 @@ gulp.task('sync', ['scripts'], function() {
     });
 });
 
-gulp.task('scripts', function() {
+gulp.task('scripts', function () {
     //set options for browserify
     var options = assign({}, watchify.args, {
         //specifying main modules, dependencies will be loaded recursively
@@ -38,7 +54,7 @@ gulp.task('scripts', function() {
 
     function rebundle() {
         return bundler.bundle()
-            .on('error', function() {
+            .on('error', function () {
                 gutil.log(arguments);
                 this.emit('end');
             })
@@ -60,7 +76,7 @@ gulp.task('scripts', function() {
     return rebundle();
 });
 
-gulp.task('html', function() {
+gulp.task('html', function () {
     return gulp.src('./index.html')
         .pipe(processhtml({}))
         .pipe(gulp.dest('./dist'))
@@ -70,7 +86,7 @@ gulp.task('html', function() {
         }));
 });
 
-gulp.task('default', ['html', 'sync'], function() {
+gulp.task('default', ['html', 'sync'], function () {
     //manually copy three.js lib since its not being bundled
     gulp.src('./libs/three.min.js')
         .pipe(gulp.dest('./dist/libs'));
@@ -79,9 +95,9 @@ gulp.task('default', ['html', 'sync'], function() {
         .pipe(gulp.dest('./dist/images'))
 
     //watch our js folder for changes
-    gulp.watch("./js/**/*.js", ['scripts']);
+    gulp.watch("./js/**/*.js", ['scripts', 'test']);
     gulp.watch("./**/*.html", ['html']);
 
-    gulp.watch("./demo/**/*.js", ['scripts']);
+    gulp.watch("./demo/**/*.js", ['scripts', 'test']);
 
 });

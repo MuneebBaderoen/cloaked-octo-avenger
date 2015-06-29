@@ -1,7 +1,7 @@
 var _ = require('underscore'),
-	Hammer = require('hammerjs');
+    Hammer = require('hammerjs');
 
-var Events = function(){};
+var Events = function () {};
 
 //Need to find a better way to store these and dispatch these events.
 //Not sure how to use browser dispatch event and how I subscribe to the event.
@@ -12,11 +12,11 @@ window.Octo = window.Octo || {};
 window.Octo.handlers = window.Octo.handlers || {};
 
 _.extend(Events.prototype, {
-	inputListener: new Hammer(document.getElementsByTagName('body')[0]),
-	//handlers: {},
-	//function to be called by all game engine classes that wish to register event handlers
-	//event handlers are declared in the attributes of the object returned by the constructor
-	/*
+    inputListener: new Hammer(document.getElementsByTagName('body')[0]),
+    //handlers: {},
+    //function to be called by all game engine classes that wish to register event handlers
+    //event handlers are declared in the attributes of the object returned by the constructor
+    /*
 	events:{
 		'state:global': function(attribute, stateObject){
 			if(attribute.was('menu') && attribute.is('game')){
@@ -26,51 +26,51 @@ _.extend(Events.prototype, {
 		}
 	}
 	*/
-	on: function(listeningObject, events, handler){
-		var self = this;
+    on: function (listeningObject, events, handler) {
+        var self = this;
 
-		if(arguments.length<3){
-			console.error('missing parameters. Function requires (listeningObject, eventNames, handler)');
-		}
+        if (arguments.length < 3) {
+            console.error('missing parameters. Function requires (listeningObject, eventNames, handler)');
+        }
 
-		_.each(events.split(' '), function(eventName){
-			//create the key if it doesnt exist
-			if(!Octo.handlers[eventName]){
-				Octo.handlers[eventName] = [];
-			}
+        _.each(events.split(' '), function (eventName) {
+            //create the key if it doesnt exist
+            if (!Octo.handlers[eventName]) {
+                Octo.handlers[eventName] = [];
+            }
 
-			//if touch listener
-			//will evaluate to false if there are no matches (returns null)
-			if(eventName.match('touch')){
-				listeningObject.inputListener.on(eventName.split(':')[1], function(touchEvent){
-					listeningObject.trigger(eventName, [touchEvent]);
-				})
-			}
+            //if touch listener
+            //will evaluate to false if there are no matches (returns null)
+            if (eventName.match('touch')) {
+                listeningObject.inputListener.on(eventName.split(':')[1], function (touchEvent) {
+                    listeningObject.trigger(eventName, [touchEvent]);
+                })
+            }
 
-			//append the new callback
-			Octo.handlers[eventName].push({
-				obj: listeningObject,
-				callback: handler
-			});
-		});	
-	},
-	trigger: function(events, data){
-		//if the trigger call is made from an object, and not from the 'static' Events class,
-		//then the source will be appended as the first element	
-		data.unshift(this);
+            //append the new callback
+            Octo.handlers[eventName].push({
+                obj: listeningObject,
+                callback: handler
+            });
+        });
+    },
+    trigger: function (events, data) {
+        //if the trigger call is made from an object, and not from the 'static' Events class,
+        //then the source will be appended as the first element	
+        data.unshift(this);
 
-		_.each(events.split(' '), function(eventName){
-			_.each(Octo.handlers[eventName], function(handler){
-				//event callback is to be fired with the original listening object as the context
-				//data is an array of arguments to be received from the trigger call
-				//e.g. Events.trigger('state:key state', [arg1, arg2, arg3]);
-				handler.callback.apply(handler.obj, data);
-			});
-		});
+        _.each(events.split(' '), function (eventName) {
+            _.each(Octo.handlers[eventName], function (handler) {
+                //event callback is to be fired with the original listening object as the context
+                //data is an array of arguments to be received from the trigger call
+                //e.g. Events.trigger('state:key state', [arg1, arg2, arg3]);
+                handler.callback.apply(handler.obj, data);
+            });
+        });
 
-		//for later
-		//something like this
-		/*
+        //for later
+        //something like this
+        /*
 		var event = document.createEvent();
 		event.data(data)
 		event.dispatchEvent();
@@ -79,17 +79,17 @@ _.extend(Events.prototype, {
 		listen for changes and execute registered handler, might be async where
 		my implementation is definitely sychronous
 		*/
-	},
-	listen: function(eventsObject){
-		var self = this, 
-			on = self.on,
-			eventsObject = eventsObject || self.events || self.options.events;
+    },
+    listen: function (eventsObject) {
+        var self = this,
+            on = self.on,
+            eventsObject = eventsObject || self.events || self.options.events;
 
-		_.each(_.keys(eventsObject), function(events){
-			var callback = eventsObject[events];
-			on(self, events, callback);
-		});
-	}
+        _.each(_.keys(eventsObject), function (events) {
+            var callback = eventsObject[events];
+            on(self, events, callback);
+        });
+    }
 
 });
 
