@@ -96,7 +96,7 @@ gulp.task('default', ['html', 'sync', 'test'], function () {
 
     //watch our js folder for changes
     gulp.watch("./js/**/*.js", ['scripts', 'test']);
-    gulp.watch("./**/*.html", ['html']);
+    gulp.watch("./*.html", ['html']);
 
     gulp.watch("./demo/**/*.js", ['scripts', 'test']);
 

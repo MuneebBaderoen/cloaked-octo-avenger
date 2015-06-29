@@ -1,3 +1,5 @@
+var instanbul = require('browserify-istanbul');
+
 module.exports = function (config) {
     config.set({
         files: [
@@ -13,7 +15,9 @@ module.exports = function (config) {
         reporters: ['coverage', 'spec', 'failed'],
         browserify: {
             debug: true, // output source maps
-            transform: ['browserify-istanbul']
+            transform: [instanbul({
+                ignore: ['**/node_modules/**', '**/*.test.js', '**/libs/**/*'],
+            })]
         }
     })
 };
