@@ -31,6 +31,7 @@ _.extend(Events.prototype, {
 
         if (arguments.length < 3) {
             console.error('missing parameters. Function requires (listeningObject, eventNames, handler)');
+            return;
         }
 
         _.each(events.split(' '), function (eventName) {
@@ -53,6 +54,11 @@ _.extend(Events.prototype, {
                 callback: handler
             });
         });
+    },
+    off: function (listeningObject, events, handler) {
+        if (!handler) {
+
+        }
     },
     trigger: function (events, data) {
         //if the trigger call is made from an object, and not from the 'static' Events class,
@@ -92,6 +98,12 @@ _.extend(Events.prototype, {
             var callback = eventsObject[events];
             on(self, events, callback);
         });
+    },
+    stopListening: function (listeningObject, events, handler) {
+        //alias to make usage more readable
+        //listen(), stopListening() vs listen(), off()
+        //since listen will call 'on' without user knowledge
+        this.off(listeningObject, events, handler);
     }
 
 });

@@ -58,9 +58,6 @@ describe('Test suite for State.js', function () {
 
         expect(attr instanceof Attribute)
             .toBe(true);
-
-        expect(attr.is('testValue'))
-            .toBe(true);
     });
 
     afterEach(function () {

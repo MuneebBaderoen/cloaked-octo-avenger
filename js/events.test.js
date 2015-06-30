@@ -5,7 +5,7 @@ var _ = require('underscore'),
 
 describe('Test suite for Events.js', function () {
     var TestClass,
-        EventInstance,
+        eventInstance,
         testReceiver;
 
     beforeEach(function () {
@@ -98,11 +98,32 @@ describe('Test suite for Events.js', function () {
     describe('Test Removing Subscriptions', function () {
         beforeEach(function () {
             window.Octo.handlers = {};
+            testReceiver.events = {
+                'listenEvent': function (source, data) {
+                    // console.log('Made it into the event callback');
+                    expect(data)
+                        .toBeTruthy();
+                }
+            };
 
+            testReceiver.listen();
         });
 
-        it('should description', function () {
-            //body
+        it('should remove all handlers if not passed any params', function () {
+            eventInstance.off();
+            expect(Octo.handlers)
+                .toBe({});
+        });
+
+        it('should remove all handlers for an event when passed an event name', function () {
+
+            expect(_.keys(Octo.handlers))
+                .toContain('testEvent');
+        });
+
+        it('should remove all handlers for a specific object when passed an object', function () {
+            expect(1)
+                .toBe(2);
         });
 
         afterEach(function () {
@@ -159,29 +180,13 @@ describe('Test suite for Events.js', function () {
         });
 
         it('should description', function () {
-            //body
+            expect(1)
+                .toBe(2);
         });
 
         afterEach(function () {
 
         });
     });
-
-
-    it('should clear all handlers if not passed any params', function () {
-        expect(1)
-            .toBe(2);
-    });
-
-    it('should remove all handlers for an event when passed an event name', function () {
-        expect(1)
-            .toBe(2);
-    });
-
-    it('should remove all handlers for a specific object when passed an object', function () {
-        expect(1)
-            .toBe(2);
-    });
-
 
 });

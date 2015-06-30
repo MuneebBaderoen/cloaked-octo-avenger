@@ -10,8 +10,14 @@ var State = function (options) {
 
 _.extend(State.prototype, Events.prototype, {
     set: function (key, value) {
-        var previous = this.attributes[key];
-        this.attributes[key] = new Attribute(value, previous);
+        var attr = this.attributes[key];
+
+        if (attr) {
+            attr.set(value);
+        } else {
+            this.attributes[key] = new Attribute(value);
+        }
+
         this.trigger('state:' + key + ' state', this.attributes[key]);
     },
     get: function (key) {
