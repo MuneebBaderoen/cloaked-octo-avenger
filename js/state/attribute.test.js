@@ -3,8 +3,8 @@ describe('Test suite for Attribute.js', function () {
 
     });
 
-    it('should description', function () {
-        //body
+    it('should set the previous value if value is overwritten', function () {
+
     });
 
     afterEach(function () {

@@ -17,15 +17,15 @@ _.extend(Events.prototype, {
     //function to be called by all game engine classes that wish to register event handlers
     //event handlers are declared in the attributes of the object returned by the constructor
     /*
-	events:{
-		'state:global': function(attribute, stateObject){
-			if(attribute.was('menu') && attribute.is('game')){
-				stateObject.set('game', 'loading');
-				this.getLayer('game').initialize();
-			}
-		}
-	}
-	*/
+    events:{
+        'state:global': function(attribute, stateObject){
+            if(attribute.was('menu') && attribute.is('game')){
+                stateObject.set('game', 'loading');
+                this.getLayer('game').initialize();
+            }
+        }
+    }
+    */
     on: function (listeningObject, events, handler) {
         var self = this;
 
@@ -56,7 +56,10 @@ _.extend(Events.prototype, {
     },
     trigger: function (events, data) {
         //if the trigger call is made from an object, and not from the 'static' Events class,
-        //then the source will be appended as the first element	
+        //then the source will be appended as the first element 
+        if (!_.isArray(data)) {
+            data = [data];
+        }
         data.unshift(this);
 
         _.each(events.split(' '), function (eventName) {
@@ -71,14 +74,14 @@ _.extend(Events.prototype, {
         //for later
         //something like this
         /*
-		var event = document.createEvent();
-		event.data(data)
-		event.dispatchEvent();
+        var event = document.createEvent();
+        event.data(data)
+        event.dispatchEvent();
 
-		//-----
-		listen for changes and execute registered handler, might be async where
-		my implementation is definitely sychronous
-		*/
+        //-----
+        listen for changes and execute registered handler, might be async where
+        my implementation is definitely sychronous
+        */
     },
     listen: function (eventsObject) {
         var self = this,

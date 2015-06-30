@@ -18,8 +18,8 @@ var karma = require('karma-as-promised');
 
 gulp.task('test', function () {
     return karma.server.start({
-            configFile: __dirname + '/karma.conf.js',
-            singleRun: true
+            configFile: __dirname + '/karma.conf.js'
+                // singleRun: true
         })
         .then(function () {
             console.log('mission success!');
@@ -86,7 +86,7 @@ gulp.task('html', function () {
         }));
 });
 
-gulp.task('default', ['html', 'sync', 'test'], function () {
+gulp.task('default', ['html', 'sync'], function () {
     //manually copy three.js lib since its not being bundled
     gulp.src('./libs/three.min.js')
         .pipe(gulp.dest('./dist/libs'));
@@ -95,9 +95,9 @@ gulp.task('default', ['html', 'sync', 'test'], function () {
         .pipe(gulp.dest('./dist/images'))
 
     //watch our js folder for changes
-    gulp.watch("./js/**/*.js", ['scripts', 'test']);
+    gulp.watch("./js/**/*.js", ['scripts']);
     gulp.watch("./*.html", ['html']);
 
-    gulp.watch("./demo/**/*.js", ['scripts', 'test']);
+    gulp.watch("./demo/**/*.js", ['scripts']);
 
 });

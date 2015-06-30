@@ -18,8 +18,6 @@ describe('Test suite for Events.js', function () {
 
         testReceiver = new TestClass();
         eventInstance = new Events();
-
-        window.Octo.handlers = {};
     });
 
     it('should not have any callbacks registered on initialization', function () {
@@ -27,62 +25,148 @@ describe('Test suite for Events.js', function () {
             .toEqual({});
     });
 
-    it('should subscribe to an event when calling Global "on"', function () {
-        function callback(source, eventName) {
-            console.log(eventName + " received");
-        }
+    describe('Test Subscribing to Events', function () {
+        beforeEach(function () {
+            window.Octo.handlers = {};
 
-        eventInstance.on(testReceiver, 'testEvent', callback);
-
-        expect(Octo.handlers)
-            .not.toEqual({});
-        expect(Octo.handlers)
-            .toEqual({
-                'testEvent': [{
-                    obj: testReceiver,
-                    callback: callback
-                }]
-            });
-    });
-
-    it('should subscribe to an event when calling "on" via extended prototype', function () {
-        var testReceiver = new TestClass();
-        testReceiver.on(testReceiver, 'testEvent', function callback(source, eventName) {
-            console.log(eventName + " received");
         });
 
-        expect(Octo.handlers)
-    });
-
-    it('should subscribe to multiple events when space separated', function () {
-        var testReceiver = new TestClass();
-        var eventInstance = new Events();
-
-
-        var length = _.keys(Octo.handlers)
-            .length;
-        eventInstance.on(testReceiver, 'testEventOne testEventTwo', function callback(source, eventName) {
-            console.log(eventName + " received");
-        });
-        expect(length + 2)
-            .toBe(_.keys(Octo.handlers)
-                .length);
-    });
-
-    it('should register events object when calling this.listen()', function () {
-        testReceiver.events = {
-            'listenEvent': function (source, data) {
-                console.log('Made it into the event callback');
-                expect(data)
-                    .toBeTruthy();
+        it('should subscribe to an event when calling Global "on"', function () {
+            function callback(source, eventName) {
+                // console.log(eventName + " received");
             }
-        };
 
-        testReceiver.listen();
-        testReceiver.trigger('listenEvent', [{
-            data: 'success'
-        }]);
+            eventInstance.on(testReceiver, 'testEvent', callback);
+
+            expect(Octo.handlers)
+                .not.toEqual({});
+            expect(Octo.handlers)
+                .toEqual({
+                    'testEvent': [{
+                        obj: testReceiver,
+                        callback: callback
+                    }]
+                });
+        });
+
+        it('should subscribe to an event when calling "on" via extended prototype', function () {
+            var testReceiver = new TestClass();
+            testReceiver.on(testReceiver, 'testEvent', function callback(source, eventName) {
+                // console.log(eventName + " received");
+            });
+
+            expect(_.keys(Octo.handlers)
+                    .length)
+                .toBe(1);
+        });
+
+        it('should subscribe to multiple events when space separated', function () {
+            var testReceiver = new TestClass();
+            var eventInstance = new Events();
+
+
+            var length = _.keys(Octo.handlers)
+                .length;
+            eventInstance.on(testReceiver, 'testEventOne testEventTwo', function callback(source, eventName) {
+                // console.log(eventName + " received");
+            });
+            expect(length + 2)
+                .toBe(_.keys(Octo.handlers)
+                    .length);
+        });
+
+        it('should register events object when calling this.listen()', function () {
+            testReceiver.events = {
+                'listenEvent': function (source, data) {
+                    // console.log('Made it into the event callback');
+                    expect(data)
+                        .toBeTruthy();
+                }
+            };
+
+            testReceiver.listen();
+            testReceiver.trigger('listenEvent', [{
+                data: 'success'
+            }]);
+        });
+
+        afterEach(function () {
+
+        });
     });
+
+    describe('Test Removing Subscriptions', function () {
+        beforeEach(function () {
+            window.Octo.handlers = {};
+
+        });
+
+        it('should description', function () {
+            //body
+        });
+
+        afterEach(function () {
+
+        });
+    });
+
+    describe('Test Triggering Events', function () {
+        beforeEach(function () {
+            window.Octo.handlers = {};
+
+        });
+
+        it('should allow objects to be passed as data when triggering events', function () {
+            testReceiver.events = {
+                'listenEvent': function (source, data) {
+                    expect(typeof data)
+                        .toBe('object');
+
+                    // console.log('callbacks are able to receive objects', data);
+                }
+            };
+
+            testReceiver.listen();
+            testReceiver.trigger('listenEvent', {
+                data: 'success'
+            });
+        });
+
+        it('should allow functions to be passed as data when triggering events', function () {
+            testReceiver.events = {
+                'listenEvent': function (source, data) {
+                    expect(typeof data)
+                        .toBe('function');
+                    data();
+                }
+            };
+
+            testReceiver.listen();
+            testReceiver.trigger('listenEvent', function () {
+                // console.log('callbacks are able to receive functions')
+            });
+        });
+
+        afterEach(function () {
+
+        });
+    });
+
+    describe('Test Receiving Events', function () {
+        beforeEach(function () {
+            window.Octo.handlers = {};
+
+        });
+
+        it('should description', function () {
+            //body
+        });
+
+        afterEach(function () {
+
+        });
+    });
+
 
     it('should clear all handlers if not passed any params', function () {
         expect(1)
@@ -98,5 +182,6 @@ describe('Test suite for Events.js', function () {
         expect(1)
             .toBe(2);
     });
+
 
 });
