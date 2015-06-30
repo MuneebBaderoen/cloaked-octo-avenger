@@ -2,6 +2,7 @@ var instanbul = require('browserify-istanbul');
 
 module.exports = function (config) {
     config.set({
+        port: 30000,
         files: [
             // 'js/**/*.test.js',
             'js/**/*.js'

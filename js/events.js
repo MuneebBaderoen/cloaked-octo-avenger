@@ -56,8 +56,31 @@ _.extend(Events.prototype, {
         });
     },
     off: function (listeningObject, events, handler) {
-        if (!handler) {
+        var self = this;
 
+        if (arguments.length == 0) {
+            if (this instanceof Events) {
+                //remove all handlers if off is called without params on an instance of Events
+                //and not via extending the prototype
+                console.log("i am an event instance");
+                Octo.handlers = {};
+            } else {
+
+                //remove all handlers for that object
+                _.each(Octo.handlers, function (eventHandlerArray, key) {
+                    //subtract the handler objects from the array which have the calling object as their listening object
+                    var diff = _.difference(eventHandlerArray, _.where(eventHandlerArray, {
+                        obj: self
+                    }));
+
+                    //if there are no more objects listening for this event, delete the key
+                    if (_.isEmpty(diff)) {
+                        delete Octo.handlers[key]
+                    } else {
+                        Octo.handlers[key] = diff;
+                    }
+                });
+            }
         }
     },
     trigger: function (events, data) {
