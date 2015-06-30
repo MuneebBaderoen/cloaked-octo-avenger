@@ -26,11 +26,11 @@ _.extend(Events.prototype, {
         }
     }
     */
-    on: function (listeningObject, events, handler) {
+    on: function (events, handler) {
         var self = this;
 
-        if (arguments.length < 3) {
-            console.error('missing parameters. Function requires (listeningObject, eventNames, handler)');
+        if (arguments.length < 2) {
+            console.error('missing parameters. Function requires (eventNames, handler)');
             return;
         }
 
@@ -43,45 +43,46 @@ _.extend(Events.prototype, {
             //if touch listener
             //will evaluate to false if there are no matches (returns null)
             if (eventName.match('touch')) {
-                listeningObject.inputListener.on(eventName.split(':')[1], function (touchEvent) {
-                    listeningObject.trigger(eventName, [touchEvent]);
+                self.inputListener.on(eventName.split(':')[1], function (touchEvent) {
+                    self.trigger(eventName, [touchEvent]);
                 })
             }
 
             //append the new callback
             Octo.handlers[eventName].push({
-                obj: listeningObject,
+                obj: self,
                 callback: handler
             });
         });
     },
-    off: function (listeningObject, events, handler) {
+    off: function (events) {
         var self = this;
 
-        if (arguments.length == 0) {
-            if (this instanceof Events) {
-                //remove all handlers if off is called without params on an instance of Events
-                //and not via extending the prototype
-                console.log("i am an event instance");
-                Octo.handlers = {};
-            } else {
-
-                //remove all handlers for that object
-                _.each(Octo.handlers, function (eventHandlerArray, key) {
-                    //subtract the handler objects from the array which have the calling object as their listening object
-                    var diff = _.difference(eventHandlerArray, _.where(eventHandlerArray, {
-                        obj: self
-                    }));
-
-                    //if there are no more objects listening for this event, delete the key
-                    if (_.isEmpty(diff)) {
-                        delete Octo.handlers[key]
-                    } else {
-                        Octo.handlers[key] = diff;
-                    }
-                });
-            }
+        //allow for events to be specified on its own
+        if (_.isUndefined(events) && this instanceof Events) {
+            //remove all handlers if off is called without params on an instance of Events
+            //and not via extending the prototype
+            Octo.handlers = {};
+            return;
         }
+
+        //handler arrays matching the event name
+        var matchingHandlers = events ? _.pick(Octo.handlers, events.split(' ')) : Octo.handlers;
+
+        //remove all handlers for that object
+        _.each(matchingHandlers, function (eventHandlerArray, key) {
+            //subtract the handler objects from the array which have the calling object as their listening object
+            var diff = _.difference(eventHandlerArray, _.where(eventHandlerArray, {
+                obj: self
+            }));
+
+            //if there are no more objects listening for this event, delete the key
+            if (_.isEmpty(diff)) {
+                delete Octo.handlers[key]
+            } else {
+                Octo.handlers[key] = diff;
+            }
+        });
     },
     trigger: function (events, data) {
         //if the trigger call is made from an object, and not from the 'static' Events class,
@@ -114,19 +115,18 @@ _.extend(Events.prototype, {
     },
     listen: function (eventsObject) {
         var self = this,
-            on = self.on,
             eventsObject = eventsObject || self.events || self.options.events;
 
         _.each(_.keys(eventsObject), function (events) {
             var callback = eventsObject[events];
-            on(self, events, callback);
+            self.on.call(self, events, callback);
         });
     },
-    stopListening: function (listeningObject, events, handler) {
+    stopListening: function (events) {
         //alias to make usage more readable
         //listen(), stopListening() vs listen(), off()
         //since listen will call 'on' without user knowledge
-        this.off(listeningObject, events, handler);
+        this.off(events);
     }
 
 });

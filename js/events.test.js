@@ -36,7 +36,7 @@ describe('Test suite for Events.js', function () {
                 // console.log(eventName + " received");
             }
 
-            eventInstance.on(testReceiver, 'testEvent', callback);
+            testReceiver.on('testEvent', callback);
 
             expect(Octo.handlers)
                 .not.toEqual({});
@@ -51,7 +51,7 @@ describe('Test suite for Events.js', function () {
 
         it('should subscribe to an event when calling "on" via extended prototype', function () {
             var testReceiver = new TestClass();
-            testReceiver.on(testReceiver, 'testEvent', function callback(source, eventName) {
+            testReceiver.on('testEvent', function callback(source, eventName) {
                 // console.log(eventName + " received");
             });
 
@@ -67,7 +67,7 @@ describe('Test suite for Events.js', function () {
 
             var length = _.keys(Octo.handlers)
                 .length;
-            eventInstance.on(testReceiver, 'testEventOne testEventTwo', function callback(source, eventName) {
+            testReceiver.on('testEventOne testEventTwo', function callback(source, eventName) {
                 // console.log(eventName + " received");
             });
             expect(length + 2)
