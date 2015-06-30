@@ -5,7 +5,7 @@ var _ = require('underscore'),
 
 describe('Test suite for Events.js', function () {
     var TestClass,
-        eventInstance,
+        eventsInstance,
         testReceiver;
 
     beforeEach(function () {
@@ -17,7 +17,7 @@ describe('Test suite for Events.js', function () {
         });
 
         testReceiver = new TestClass();
-        eventInstance = new Events();
+        eventsInstance = new Events();
     });
 
     it('should not have any callbacks registered on initialization', function () {
@@ -27,6 +27,7 @@ describe('Test suite for Events.js', function () {
 
     describe('Test Subscribing to Events', function () {
         beforeEach(function () {
+
             window.Octo.handlers = {};
 
         });
@@ -62,7 +63,7 @@ describe('Test suite for Events.js', function () {
 
         it('should subscribe to multiple events when space separated', function () {
             var testReceiver = new TestClass();
-            var eventInstance = new Events();
+            var eventsInstance = new Events();
 
 
             var length = _.keys(Octo.handlers)
@@ -88,19 +89,32 @@ describe('Test suite for Events.js', function () {
             testReceiver.trigger('listenEvent', [{
                 data: 'success'
             }]);
-        });
-
-        afterEach(function () {
-
+            expect(_.keys(Octo.handlers)
+                    .length)
+                .toBe(1);
         });
     });
 
     describe('Test Removing Subscriptions', function () {
+
+
+        var callbackCount,
+            callbacksExecuted;
+
         beforeEach(function () {
             window.Octo.handlers = {};
             testReceiver.events = {
                 'listenEvent': function (source, data) {
-                    data();
+                    callbackCount++;
+                    callbacksExecuted.push('listenEvent')
+                },
+                'otherEvent': function (source, data) {
+                    callbackCount++;
+                    callbacksExecuted.push('otherEvent')
+                },
+                'anotherEvent': function (source, data) {
+                    callbackCount++;
+                    callbacksExecuted.push('anotherEvent')
                 }
             };
 
@@ -109,14 +123,18 @@ describe('Test suite for Events.js', function () {
             anotherReceiver = new TestClass();
             anotherReceiver.events = {
                 'anotherEvent': function (source, data) {
-                    data();
+                    callbackCount++;
+                    callbacksExecuted.push('anotherEvent')
                 }
             }
             anotherReceiver.listen();
+
+            callbackCount = 0;
+            callbacksExecuted = [];
         });
 
         it('should remove all handlers if global "off" is not passed any params ', function () {
-            eventInstance.off();
+            eventsInstance.off();
             expect(Octo.handlers)
                 .toEqual({});
         });
@@ -125,10 +143,12 @@ describe('Test suite for Events.js', function () {
             expect(_.keys(Octo.handlers))
                 .toContain('listenEvent');
             expect(_.keys(Octo.handlers))
+                .toContain('otherEvent');
+            expect(_.keys(Octo.handlers))
                 .toContain('anotherEvent');
             expect(_.keys(Octo.handlers)
                     .length)
-                .toBe(2);
+                .toBe(3);
 
             testReceiver.off();
 
@@ -140,17 +160,29 @@ describe('Test suite for Events.js', function () {
         });
 
         it('should remove all handlers for an event when passed an event name', function () {
-
-            expect(_.keys(Octo.handlers))
-                .toContain('testEvent');
-        });
-
-        it('should remove all handlers for a specific object when passed an object', function () {
-            expect(1)
+            expect(Octo.handlers['anotherEvent'].length)
                 .toBe(2);
+
+            testReceiver.stopListening('anotherEvent');
+
+            expect(Octo.handlers['anotherEvent'].length)
+                .toBe(1);
         });
 
-        afterEach(function () {
+        it('should remove all handlers for an event when passed multiple space separated event names', function () {
+            expect(_.keys(Octo.handlers))
+                .toContain('anotherEvent');
+
+            expect(Octo.handlers['anotherEvent'].length)
+                .toBe(2);
+
+            testReceiver.stopListening('otherEvent listenEvent');
+
+            expect(Octo.handlers['anotherEvent'].length)
+                .toBe(2);
+            expect(_.keys(Octo.handlers)
+                    .length)
+                .toBe(1);
 
         });
     });
@@ -192,44 +224,38 @@ describe('Test suite for Events.js', function () {
                 // console.log('callbacks are able to receive functions')
             });
         });
-
-        afterEach(function () {
-
-        });
     });
 
     describe('Test Receiving Events', function () {
-        var callbackCount = 0,
-            callbackExecuted = [];
+        var callbackCount,
+            callbacksExecuted;
 
         beforeEach(function () {
             window.Octo.handlers = {};
             testReceiver.events = {
                 'listenEvent': function (source, data) {
                     callbackCount++;
-                    callbackExecuted.push('listenEvent')
+                    callbacksExecuted.push('listenEvent')
                 },
                 'otherEvent': function (source, data) {
                     callbackCount++;
-                    callbackExecuted.push('otherEvent')
+                    callbacksExecuted.push('otherEvent')
                 },
                 'anotherEvent': function (source, data) {
                     callbackCount++;
-                    callbackExecuted.push('anotherEvent')
+                    callbacksExecuted.push('anotherEvent')
                 }
             };
 
             testReceiver.listen();
-        });
 
-        afterEach(function () {
             callbackCount = 0;
-            callbackExecuted = [];
-        })
+            callbacksExecuted = [];
+        });
 
         it('should execute a callback if an object subscribed', function () {
             testReceiver.trigger('listenEvent', {});
-            expect(callbackExecuted)
+            expect(callbacksExecuted)
                 .toContain('listenEvent');
             expect(callbackCount)
                 .toBe(1);
@@ -238,9 +264,9 @@ describe('Test suite for Events.js', function () {
         it('should fire all callbacks if multiple events are triggered', function () {
             testReceiver.trigger('listenEvent anotherEvent', {});
 
-            expect(callbackExecuted)
+            expect(callbacksExecuted)
                 .toContain('listenEvent');
-            expect(callbackExecuted)
+            expect(callbacksExecuted)
                 .toContain('anotherEvent');
             expect(callbackCount)
                 .toBe(2);

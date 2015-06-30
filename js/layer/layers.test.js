@@ -1,15 +1,34 @@
-var Layers = require('./layers.js')
+var _ = require('underscore'),
+    Layer = require('./layer.js'),
+    Layers = require('./layers.js');
 
-describe('Test suite for layer manager', function(){
-	beforeEach(function(){
+describe('Test suite for layer manager', function () {
+    var layersInstance,
+        testClass;
 
-	});
+    beforeEach(function () {
+        layersInstance = new Layers();
 
-	it('should add a layer to the list of layers', function(){
-		expect(1).toBe(2);
-	});
+        testClass = function () {
 
-	afterEach(function(){
+        }
 
-	});
+        _.extend(testClass.prototype, Layers.prototype, {
+
+        });
+    });
+
+    it('should add a layer to the list of layers', function () {
+        expect(layersInstance.layers.length)
+            .toBe(0);
+
+        layersInstance.addLayer(new Layer());
+
+        expect(layersInstance.layers.length)
+            .toBe(1);
+    });
+
+    afterEach(function () {
+
+    });
 });
