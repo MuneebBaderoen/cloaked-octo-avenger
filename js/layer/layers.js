@@ -1,4 +1,5 @@
-var _ = require('underscore');
+var _ = require('underscore'),
+    Layer = require('./layer.js');
 //Events = require('./events.js');
 
 var Layers = function () {};
@@ -6,7 +7,9 @@ var Layers = function () {};
 _.extend(Layers.prototype, {
     layers: [],
     addLayer: function (layer) {
-        this.layers.push(layer);
+        if (layer instanceof Layer) {
+            this.layers.push(layer);
+        }
     },
     getLayer: function (layerLabel) {
         return _.findWhere(this.layers, {
@@ -19,7 +22,7 @@ _.extend(Layers.prototype, {
         });
     },
     removeLayer: function (layerLabel) {
-        //body	
+        //body  
     },
     orderLayers: function (newOrder) {
         var temp = [];
